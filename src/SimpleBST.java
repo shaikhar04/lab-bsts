@@ -63,7 +63,14 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
 
   @Override
   public V set(K key, V value) {
-    return null;        // STUB
+    if (key == null) {
+      throw new NullPointerException("null key");
+    }
+    if (root == null) {
+      root = new BSTNode<K,V>(key, value);
+      return value;
+    }
+    return set(key, value, root);
   } // set(K,V)
 
   @Override
@@ -135,7 +142,7 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
 
   @Override
   public void forEach(BiConsumer<? super K, ? super V> action) {
-    // STUB
+    
   } // forEach
 
   // +----------------------+----------------------------------------
@@ -186,6 +193,35 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
       return get(key, node.right);
     }
   } // get(K, BSTNode<K,V>)
+
+  /**
+   * Sets a subtree.
+   */
+  V set(K key, V value, BSTNode<K,V> node) {
+    int comp = comparator.compare(key, node.key);
+
+    if (comp == 0) {
+      node.value = value;
+      return value;
+
+    } else if (comp < 0) {
+      if (node.left == null) {
+        node.left = new BSTNode<K,V>(key, value);
+        return value;
+      }
+
+      return set(key, value, node.left);
+
+    } else {
+      if (node.right == null) {
+        node.right = new BSTNode<K,V>(key, value);
+        return value;
+      }
+
+      return set(key, value, node.right);
+
+    }
+  } // set(K, V, BSTNode<K,V>)
 
   /**
    * Get an iterator for all of the nodes. (Useful for implementing the 
